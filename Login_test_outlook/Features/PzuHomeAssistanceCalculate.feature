@@ -19,5 +19,5 @@ Scenario: fill form
 	#When Find '//*[@value ='apartment']' element using XPath and save as 'home2'
 	#Given Wait permamently for '2' seconds
 	#Then I Click at 'home' button
-	Given Wait permamently for '15' seconds
+	Given Wait permamently for '16' seconds
 	
