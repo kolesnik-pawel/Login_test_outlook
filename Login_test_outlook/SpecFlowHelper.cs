@@ -1,9 +1,11 @@
 ﻿using FluentAssertions;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,10 +35,28 @@ namespace Login_test_outlook
 
         }
 
-        [Given(@"Open Browser and go to page '(.*)'")]
-        public void OpenBrowserAndGoToPage(string url)
+        //[Given(@"Open Browser and go to page '(.*)'")]
+        //public void OpenBrowserAndGoToPage(string url)
+        //{
+        //    webDriver = new ChromeDriver();
+        //    webDriver.Manage().Window.Maximize();
+        //    webDriver.Navigate().GoToUrl(url);
+        //}
+
+        [Given(@"Open (Hendless Browser|Browser) and go to page '(.*)'")]
+        public void OpenBrowserAndGoToPageHendless(string handless, string url)
         {
-            webDriver = new ChromeDriver();
+            ChromeOptions chromeOptions = new ChromeOptions();
+
+            if (handless == "Hendless Browser")
+            {
+                chromeOptions.AddArgument("--headless");
+                webDriver = new ChromeDriver(chromeOptions);
+            }
+            else
+            {
+                webDriver = new ChromeDriver();
+            }
             webDriver.Manage().Window.Maximize();
             webDriver.Navigate().GoToUrl(url);
         }
@@ -89,11 +109,21 @@ namespace Login_test_outlook
         [Then(@"Find '(.*)' element using (XPath|Name|Id) and save as '(.*)'")]
         public void FindElementAndSaveAs(string element, string findBy, string saveElementName)
         {
-            IWebElement tmpElement;
+            IWebElement? tmpElement = null;
+            bool elementExist = true;
 
             if (findBy == "XPath")
             {
-                tmpElement = webDriver.FindElement(By.XPath(element));
+                try
+                {
+                    tmpElement = webDriver.FindElement(By.XPath(element));
+                }
+                catch(Exception e) { 
+                    
+                    elementExist = false;
+                    //if e.Message.c
+                }   
+
             }
             else if (findBy == "Name")
             {
@@ -108,8 +138,10 @@ namespace Login_test_outlook
                 throw new Exception($"Using unsupported By parameters {findBy}");
             }
 
-            pageElementList.Add(new ElementsOnPage(saveElementName, tmpElement));
-
+            if (elementExist != false)
+            {
+                pageElementList.Add(new ElementsOnPage(saveElementName, tmpElement));
+            }
         }
 
         [Then(@"I Click at button")]
@@ -166,8 +198,55 @@ namespace Login_test_outlook
         public void Waits(int milliseconds)
         {
            webDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(milliseconds);
+        }
 
+        [Given(@"Wait permamently for '(\d+)' (second|seconds)")]
+        [Given(@"Wait permamently for '(\d+)' (minut|minuts)")]
+        public void WaitPermamently(int time, string param)
+        {
+            if (param == "second" || param == "seconds")
+            {
+                Thread.Sleep(time*1000);
+            }
+            else if (param == "minut" || param == "minuts")
+            {
+                Thread.Sleep(time*1000*60);
+            }
+        }
 
+        [When(@"Check then popup at ('.*') are visible And close it")]
+        public void ChceckPopupAndClose(string element)
+        {
+            
+            IWebElement? tmpElement = null;
+            bool? elementExist;
+            try
+            {
+                tmpElement = webDriver.FindElement(By.XPath(element));
+                if(tmpElement is not null)
+                {
+                    if (ScenarioContext.Current.Any(x => x.Key == "PopapClose"))
+                    {
+                        ScenarioContext.Current["PopapClose"] = true;
+                    }
+                    else
+                    {
+                        ScenarioContext.Current.Add("PopapClose", true);
+                    }
+                    tmpElement.Click(); 
+                }
+            }
+            catch (Exception e) 
+            {
+                if (ScenarioContext.Current.Any(x => x.Key == "PopapClose"))
+                {
+                    ScenarioContext.Current["PopapClose"] = false;
+                }
+                else
+                {
+                    ScenarioContext.Current.Add("PopapClose", false);
+                }
+            }
         }
     }
 }

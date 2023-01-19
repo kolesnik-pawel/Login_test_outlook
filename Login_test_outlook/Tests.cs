@@ -21,26 +21,26 @@ namespace Login_test_outlook
             webDriver = new ChromeDriver();
         }
 
-        [Test]
-        public void FirstTest()
+        [Test, Pairwise]
+        public void FirstTest([Values(10,20,30,31,32,11)] int time)
         {
             webDriver.Navigate().GoToUrl("https://outlook.live.com");
-
+           
+            webDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(7000);
             webDriver.Manage().Window.Maximize();
-            webDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(2000);
-
+            Wait(5000);
+            webDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(7000);
+            
             IWebElement singInButton = webDriver.FindElement(By.XPath("/html/body/header/div/aside/div/nav/ul/li[2]/a"));
-
+            
             singInButton.Click();
             
-            Wait(30);
+            Wait(time);
 
             IWebElement inputEmail = webDriver.FindElement(By.Name("loginfmt"));
             
             Wait(30);
             inputEmail.SendKeys("Test_mail@exchange.com");
-
-            Wait(30);
             IWebElement NextButton = webDriver.FindElement(By.XPath("//*[@id=\'idSIButton9\']"));
 
             NextButton.Click();

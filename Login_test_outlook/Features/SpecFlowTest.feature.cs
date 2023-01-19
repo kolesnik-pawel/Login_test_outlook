@@ -91,7 +91,7 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 6
- testRunner.Given("Open Browser and go to page \'https://outlook.live.com\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("Open Hendless Browser and go to page \'https://outlook.live.com\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 7
  testRunner.When("Find \'html/body/header/div/aside/div/nav/ul/li[2]/a\' element using XPath and save" +
