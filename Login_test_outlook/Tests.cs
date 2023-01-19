@@ -35,6 +35,7 @@ namespace Login_test_outlook
             
             singInButton.Click();
             
+
             Wait(time);
 
             IWebElement inputEmail = webDriver.FindElement(By.Name("loginfmt"));
