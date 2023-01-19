@@ -3,7 +3,7 @@
 Negative tests to login outlook.live.com 
 
 Scenario: LogIn scenario
-	Given Open Browser and go to page 'https://outlook.live.com' 
+	Given Open Hendless Browser and go to page 'https://outlook.live.com' 
 	When Find 'html/body/header/div/aside/div/nav/ul/li[2]/a' element using XPath and save
 	Then I Click at button
 	When Find 'loginfmt' element using Name and save
